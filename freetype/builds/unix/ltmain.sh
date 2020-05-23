@@ -125,6 +125,13 @@ if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then :
 else
   case `(set -o) 2>/dev/null` in *posix*) set -o posix ;; esac
 fi
+# Same for EGREP, and just to be sure, do LTCC as well
+if test "x$EGREP" = x ; then
+    EGREP=egrep
+fi
+if test "x$LTCC" = x ; then
+    LTCC=${CC-gcc}
+fi
 
 # NLS nuisances: We save the old values in case they are required later.
 _G_user_locale=
@@ -7220,6 +7227,11 @@ func_mode_link ()
 	arg=$func_stripname_result
 	;;
 
+      -Wl,--as-needed|-Wl,--no-as-needed)
+	deplibs="$deplibs $arg"
+	continue
+	;;
+
       -Wl,*)
 	func_stripname '-Wl,' '' "$arg"
 	args=$func_stripname_result
@@ -7604,6 +7616,15 @@ func_mode_link ()
 	lib=
 	found=false
 	case $deplib in
+	-Wl,--as-needed|-Wl,--no-as-needed)
+	  if test "$linkmode,$pass" = "prog,link"; then
+	    compile_deplibs="$deplib $compile_deplibs"
+	    finalize_deplibs="$deplib $finalize_deplibs"
+	  else
+	    deplibs="$deplib $deplibs"
+	  fi
+	  continue
+	  ;;
 	-mt|-mthreads|-kthread|-Kthread|-pthread|-pthreads|--thread-safe \
         |-threads|-fopenmp|-openmp|-mp|-xopenmp|-omp|-qsmp=*)
 	  if test prog,link = "$linkmode,$pass"; then
