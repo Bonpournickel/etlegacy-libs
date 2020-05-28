@@ -1,3 +1,6 @@
+#
+# Download sqlite3 amalgamation sources from https://www.sqlite.org/download.html
+#
 cmake_minimum_required(VERSION 2.8)
 
 #project(sqlite3)
@@ -88,7 +91,7 @@ endif()
 if(WITH_SQLITE_THREADSAFE)
     add_definitions(-DSQLITE_THREADSAFE=1)
 else()
-    message("SQLite3 threadsafe is disabled. WARNING: Use with ET:L only!")
+    message("SQLite3 threadsafe is disabled")
     add_definitions(-DSQLITE_THREADSAFE=0)
 endif()
 
